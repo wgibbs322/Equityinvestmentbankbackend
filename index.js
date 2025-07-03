@@ -8,7 +8,8 @@ import bodyParser from 'body-parser';
 import corsOptions from './corsConfig.js'; // Import the CORS configuration
 import transferRoutes from './Routes/transferRoutes.js';
 import softcodeRoutes from './Routes/softcodeRoutes.js'
-import addadmintransactionRoutes from './Routes/addadmintransactionroute.js';
+import addAdminTransactionRoutes from './Routes/addadmintransactionRoutes.js';
+
 
 
 dotenv.config();
@@ -30,16 +31,14 @@ app.use(cors(corsOptions)); // Apply the CORS middleware
 
 // Routes
 app.use('/api', transactionRoutes);  // Handles transactions
-app.use('/api', userRoutes);   // Handles user-related operations
+app.use('/api/users', userRoutes);   // Handles user-related operations
 
 // Routes
 app.use('/api/transfer', transferRoutes);
 
 app.use('/api/softcode', softcodeRoutes);
 
-
-// Routes
-app.use('/api/admin', addadmintransactionRoutes);
+app.use('/api/addadmin', addAdminTransactionRoutes);
 
 
 // Error Handling Middleware
@@ -64,9 +63,5 @@ mongoose.connect(process.env.MONGODB_URI, {
 // Start the Server
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on ports ${PORT}`);
 });
-
-
-
-

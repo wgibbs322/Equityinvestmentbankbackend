@@ -1,77 +1,42 @@
-// controllers/adminController.js
-import Transaction from '../model/addadminTransaction.js';
-import Balance from '../model/addadminBalance.js';
+// controllers/addadmintransactionController.js 
+import Transaction from '../model/Addadmintransaction.js';
+import Balance from '../model/Addadminbalance.js';
 
-export const addadmintransaction = async (req, res) => {
+export const createadminTransaction = async (req, res) => {
   try {
-    const { description, amount, balanceAfter } = req.body;
-    const transaction = await Transaction.create({
-      description,
-      amount,
-      balanceAfter,
-    });
-
-    // Schedule updates
-    setTimeout(async () => {
-      transaction.status = 'Completed';
-      await transaction.save();
-
-      setTimeout(async () => {
-        transaction.status = 'Applied';
-        await transaction.save();
-
-        const balance = await Balance.findOne();
-        balance.amount = balanceAfter;
-        await balance.save();
-      }, 60 * 60 * 1000); // 1 hour after 'Completed'
-    }, 2 * 60 * 60 * 1000); // 2 hours for 'Pending' to 'Completed'
-
-    res.status(201).json(transaction);
+    const tx = await Transaction.create(req.body);
+    res.status(201).json(tx);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
-export const addadmindeleteTransaction = async (req, res) => {
+export const deleteadminTransaction = async (req, res) => {
   try {
     await Transaction.findByIdAndDelete(req.params.id);
-    res.status(200).json({ message: 'Transaction deleted' });
+    res.json({ message: 'Transaction deleted' });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
-export const addadminupdateBalance = async (req, res) => {
+export const updateadminBalance = async (req, res) => {
   try {
-    const { amount } = req.body;
-    let balance = await Balance.findOne();
-    if (!balance) {
-      balance = await Balance.create({ amount });
-    } else {
-      balance.amount = amount;
-      await balance.save();
-    }
-    res.status(200).json({ amount: balance.amount });
+    let balanceDoc = await Balance.findOne();
+    if (!balanceDoc) balanceDoc = new Balance({ amount: req.body.amount });
+    else balanceDoc.amount = req.body.amount;
+    await balanceDoc.save();
+    res.json(balanceDoc);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
-export const addadmingetBalance = async (req, res) => {
+export const getadminBalance = async (req, res) => {
   try {
-    const balance = await Balance.findOne();
-    res.status(200).json(balance);
+    const balanceDoc = await Balance.findOne();
+    res.json(balanceDoc);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
-
-export const addadmingetAllTransactions = async (req, res) => {
-  try {
-    const transactions = await Transaction.find().sort({ createdAt: -1 });
-    res.status(200).json(transactions);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
-

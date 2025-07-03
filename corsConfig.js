@@ -8,7 +8,6 @@
 
 // export default cors(corsOptions);  // Export the configured CORS middleware
 
-
 const corsOptions = {
     origin: (origin, callback) => {
         const allowedOrigins = [

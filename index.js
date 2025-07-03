@@ -30,7 +30,7 @@ app.use(cors(corsOptions)); // Apply the CORS middleware
 
 // Routes
 app.use('/api', transactionRoutes);  // Handles transactions
-app.use('/api/users', userRoutes);   // Handles user-related operations
+app.use('/api', userRoutes);   // Handles user-related operations
 
 // Routes
 app.use('/api/transfer', transferRoutes);
